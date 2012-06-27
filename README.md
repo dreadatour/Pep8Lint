@@ -33,5 +33,7 @@ Features / Usage
 ----------------
 
 Automatically check Python files with pep8 lint tool and show window with error list:
+
 [![Error list](http://habrastorage.org/storage2/5ac/5f2/ded/5ac5f2ded857d962d1ca78da087a65f7.png)](http://habrastorage.org/storage2/5ac/5f2/ded/5ac5f2ded857d962d1ca78da087a65f7.png)
-Move to error line/char on select.
+
+And move to error line/char on select.
