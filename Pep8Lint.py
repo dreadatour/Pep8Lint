@@ -28,7 +28,7 @@ class Report(pep8.BaseReport):
         return code
 
 
-class Pep8Command(sublime_plugin.TextCommand):
+class Pep8LintCommand(sublime_plugin.TextCommand):
     """Do pep8 lint on current file"""
     def run(self, edit):
         # current file name
@@ -82,6 +82,6 @@ class Pep8Command(sublime_plugin.TextCommand):
         self.view.window().show_quick_panel(errors, select_error)
 
 
-class Pep8Background(sublime_plugin.EventListener):
+class Pep8LintBackground(sublime_plugin.EventListener):
     def on_post_save(self, view):
-        view.run_command('pep8')
+        view.run_command('pep8_lint')
