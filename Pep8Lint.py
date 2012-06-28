@@ -35,7 +35,7 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
         filename = self.view.file_name()
 
         # check only Python files
-        if not '.py' == filename[-3:]:
+        if not filename.endswith('.py'):
             return
 
         # save file if dirty
