@@ -9,15 +9,15 @@ import pep8
 settings = sublime.load_settings("Pep8Lint.sublime-settings")
 
 
-class Report(pep8.BaseReport):
+class Pep8Report(pep8.BaseReport):
     """Collect all results of the checks"""
     def __init__(self, options):
-        super(Report, self).__init__(options)
+        super(Pep8Report, self).__init__(options)
         # errors "collection" =)
         self.errors = []
 
     def error(self, line_number, offset, text, check):
-        code = super(Report, self).error(line_number, offset, text, check)
+        code = super(Pep8Report, self).error(line_number, offset, text, check)
         if code:
             # save an error into collection
             self.errors.append({
@@ -43,7 +43,11 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
             self.view.run_command('save')
 
         # lint current file
-        pep8style = pep8.StyleGuide(reporter=Report)
+        pep8style = pep8.StyleGuide(
+            select=settings.get('select', []),
+            ignore=settings.get('ignore', []),
+            reporter=Pep8Report
+        )
         pep8style.input_file(filename)
 
         # show errors
