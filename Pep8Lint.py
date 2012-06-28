@@ -6,7 +6,7 @@ import pep8
 
 
 # TODO: add pep8 lint options
-#settings = sublime.load_settings("Pep8Lint.sublime-settings")
+settings = sublime.load_settings("Pep8Lint.sublime-settings")
 
 
 class Report(pep8.BaseReport):
@@ -58,8 +58,10 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
             line_text = self.view.substr(line).strip()
 
             # build line error message
-            error = [e['text'], u'{0}: {1}'.format(e['row'] + 1, line_text)]
-            errors.append(error)
+            errors.append([
+                e['text'],
+                u'{0}: {1}'.format(e['row'] + 1, line_text)
+            ])
 
         def select_error(selected_error):
             """Error was selected - go to error"""
@@ -84,4 +86,6 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
 
 class Pep8LintBackground(sublime_plugin.EventListener):
     def on_post_save(self, view):
-        view.run_command('pep8_lint')
+        # do lint on file save if not denied in settings
+        if settings.get('lint_on_save', True):
+            view.run_command('pep8_lint')
