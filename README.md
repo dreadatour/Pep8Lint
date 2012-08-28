@@ -1,3 +1,7 @@
+**Here is new, more powerful plugin for lint your Python files: [github.com/dreadatour/Flake8Lint](https://github.com/dreadatour/Flake8Lint)**
+
+**Flake8Lint includes pep8 lind and pyflakes lint - please, use it.**
+
 Pep8Lint
 =========
 
@@ -28,6 +32,25 @@ The "Packages" directory is located at:
 * Windows:
 
         %APPDATA%/Sublime Text 2/Packages/
+
+Config
+------
+
+Default Pep8Lint config: "Preferences" -> "Package Settings" -> "Pep8Lint" -> "Settings - Default"
+
+	{
+		// run pep8 lint on file saving
+		"lint_on_save": true,
+		// set maximum line length
+		"max-line-length": 79,
+		// select errors and warnings (e.g. ["E", "W6"])
+		"select": [],
+		//skip errors and warnings (e.g. ["E303", E4", "W"])
+		"ignore": []
+	}
+
+
+To change default settings, go to "Preferences" -> "Package Settings" -> "Pep8Lint" -> "Settings - User" and paste default config to opened file.
 
 Features / Usage
 ----------------

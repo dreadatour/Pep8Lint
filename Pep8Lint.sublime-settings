@@ -1,6 +1,8 @@
 {
 	// run pep8 lint on file saving
 	"lint_on_save": true,
+	// set maximum line length
+	"max-line-length": 79,
 	// select errors and warnings (e.g. ["E", "W6"])
 	"select": [],
 	//skip errors and warnings (e.g. ["E303", E4", "W"])
