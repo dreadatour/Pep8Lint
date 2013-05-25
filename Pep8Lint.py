@@ -8,6 +8,36 @@ import pep8
 settings = sublime.load_settings("Pep8Lint.sublime-settings")
 
 
+ERRORS_IN_VIEWS = {}
+
+
+def update_statusbar(view):
+    """
+    Update status bar with error.
+    """
+    # get view errors (exit if no errors found)
+    view_errors = ERRORS_IN_VIEWS.get(view.id())
+    if view_errors is None:
+        return
+
+    # get view selection (exit if no selection)
+    view_selection = view.sel()
+    if not view_selection:
+        return
+
+    # get current line (line under cursor)
+    current_line = view.rowcol(view_selection[0].end())[0]
+
+    if current_line in view_errors:
+        # there is an error on current line
+        errors = view_errors[current_line]
+        view.set_status('pep8-tip',
+                        'Pep8 errors: %s' % ' / '.join(errors))
+    else:
+        # no errors - clear statusbar
+        view.erase_status('pep8-tip')
+
+
 class Pep8Report(pep8.BaseReport):
     """
     Collect all results of the checks.
@@ -74,16 +104,49 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
         Show all errors.
         """
         errors = []
+        regions = []
+        view_errors = {}
+        is_highlight = settings.get('highlight', False)
+        is_popup = settings.get('popup', True)
 
         for e in self.errors:
             # get error line
-            line = self.view.full_line(self.view.text_point(e[0], 0))
-            line_text = self.view.substr(line).strip()
+            error_text = e[2]
+            current_line = e[0]
+            text_point = self.view.text_point(current_line, 0)
+            line = self.view.full_line(text_point)
+            full_line_text = self.view.substr(line)
+            line_text = full_line_text.strip()
             # build line error message
             errors.append([e[2], u'{0}: {1}'.format(e[0] + 1, line_text)])
 
-        # view errors window
-        self.view.window().show_quick_panel(errors, self.error_selected)
+            # prepare errors regions
+            if is_highlight:
+                # prepare line
+                line_text = full_line_text.rstrip('\r\n')
+                line_length = len(line_text)
+
+                # calculate error highlight start and end positions
+                start = text_point + line_length - len(line_text.lstrip())
+                end = text_point + line_length
+
+                regions.append(sublime.Region(start, end))
+
+        # save errors for each line in view to special dict
+            view_errors.setdefault(current_line, []).append(error_text)
+
+        # save errors dict
+        ERRORS_IN_VIEWS[self.view.id()] = view_errors
+
+        # highlight error regions if defined
+        if is_highlight:
+            self.view.add_regions('pep8-errors', regions,
+                                  'invalid.deprecated', '',
+                                  sublime.DRAW_OUTLINED)
+
+        if is_popup:
+            # display errors window
+            self.view.window().show_quick_panel(errors, self.error_selected)
 
     def error_selected(self, item_selected):
         """
@@ -115,3 +178,9 @@ class Pep8LintBackground(sublime_plugin.EventListener):
         """
         if settings.get('lint_on_save', True):
             view.run_command('pep8_lint')
+
+    def on_selection_modified(self, view):
+        """
+        Selection was modified: update status bar.
+        """
+        update_statusbar(view)

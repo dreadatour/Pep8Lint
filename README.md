@@ -46,7 +46,14 @@ Default Pep8Lint config: "Preferences" -> "Package Settings" -> "Pep8Lint" -> "S
 		// select errors and warnings (e.g. ["E", "W6"])
 		"select": [],
 		//skip errors and warnings (e.g. ["E303", E4", "W"])
-		"ignore": []
+		"ignore": [],
+
+		// Visual settings
+
+		// display popup with errors
+		"popup": true,
+		// highlight errors
+		"highlight": false
 	}
 
 
