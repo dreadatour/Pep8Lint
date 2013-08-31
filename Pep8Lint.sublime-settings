@@ -12,6 +12,6 @@
 
 	// display popup with errors
 	"popup": true,
-	// highlight errors
+	// highlight errors (valid options are "outlined", "dot", false)
 	"highlight": false
 }
