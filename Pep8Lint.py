@@ -106,7 +106,7 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
         errors = []
         regions = []
         view_errors = {}
-        is_highlight = settings.get('highlight', False)
+        highlight = settings.get('highlight', False)
         is_popup = settings.get('popup', True)
 
         for e in self.errors:
@@ -121,7 +121,7 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
             errors.append([e[2], u'{0}: {1}'.format(e[0] + 1, line_text)])
 
             # prepare errors regions
-            if is_highlight:
+            if highlight:
                 # prepare line
                 line_text = full_line_text.rstrip('\r\n')
                 line_length = len(line_text)
@@ -139,10 +139,18 @@ class Pep8LintCommand(sublime_plugin.TextCommand):
         ERRORS_IN_VIEWS[self.view.id()] = view_errors
 
         # highlight error regions if defined
-        if is_highlight:
+        if highlight == "dot":
+            self.view.add_regions('pep8-errors', regions,
+                                  'invalid.deprecated', 'dot',
+                                  sublime.HIDDEN)
+        elif highlight == "outlined":
             self.view.add_regions('pep8-errors', regions,
                                   'invalid.deprecated', '',
                                   sublime.DRAW_OUTLINED)
+        else:
+            self.view.add_regions('pep8-errors', regions,
+                                  'invalid.deprecated', '',
+                                  sublime.HIDDEN)
 
         if is_popup:
             # display errors window
